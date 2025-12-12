@@ -1,9 +1,16 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
-
 from sqlalchemy import Column, Integer, String,\
     Numeric, DateTime, func
+from sqlalchemy import ForeignKey
+from sqlalchemy import CheckConstraint
+from sqlalchemy.orm import Session
+
+# Creating an instance of the shared ORM session
+engine = create_engine("sqlite:///our.db")
+Base.metadata.create_all(engine)
+session = Session(bind=engine)
 
 class Product(Base):
     __tablename__ = 'product'
@@ -20,7 +27,6 @@ class Order(Base):
     total = Column(Numeric(10,2), nullable=False)
     created_at = Column(DateTime, server_default=func.now())
 
-from sqlalchemy import ForeignKey
 
 class OrderItem(Base):
     __tablename__ = 'order_item'
@@ -30,7 +36,6 @@ class OrderItem(Base):
     quantity = Column(Integer, nullable=False)
     subtotal = Column(Numeric(10,2), nullable=False)
 
-from sqlalchemy import CheckConstraint
 
 class Payment(Base):
     __tablename__ = 'payment'

@@ -2,9 +2,6 @@ from classes import *
 engine = create_engine("sqlite:///our.db")
 Base.metadata.create_all(engine)
 
-from sqlalchemy.orm import Session
-session = Session(bind=engine)
-# session.add(), session.commit(), session.query()
 
 def hash(p):
     return p
