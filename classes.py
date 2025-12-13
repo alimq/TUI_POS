@@ -13,12 +13,18 @@ class Product(Base):
     stock_quantity = Column(Integer, nullable=False)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now())
+    def __init__(self,name,price,stock_q):
+        self.name = name
+        self.price = price
+        self.stock_quantity = stock_q
 
 class Order(Base):
     __tablename__ = 'order'
     id = Column(Integer, primary_key=True)
     total = Column(Numeric(10,2), nullable=False)
     created_at = Column(DateTime, server_default=func.now())
+    def __init__(self,total):
+        self.total = total
 
 from sqlalchemy import ForeignKey
 
@@ -28,7 +34,10 @@ class OrderItem(Base):
     order_id = Column(Integer, ForeignKey('order.id'), nullable=False)
     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
     quantity = Column(Integer, nullable=False)
-    subtotal = Column(Numeric(10,2), nullable=False)
+    def __init__(self,order_id,product_id,quantity):
+        self.order_id = order_id
+        self.product_id = product_id
+        self.quantity = quantity
 
 from sqlalchemy import CheckConstraint
 
@@ -36,10 +45,15 @@ class Payment(Base):
     __tablename__ = 'payment'
     id = Column(Integer, primary_key=True)
     order_id = Column(Integer, ForeignKey('order.id'))
-    amount = Column(Numeric(10,2), nullable=False)
     method = Column(String(7),
-                    CheckConstraint("method IN ('ewalllet','cash')"
+                    CheckConstraint("method IN ('ewallet','cash')"
                                     ,name="method"),
                     nullable=False
                     )
     created_at = Column(DateTime, server_default=func.now())
+    def __init__(self,order_id,method):
+        self.order_id = order_id
+        self.method = method
+
+engine = create_engine("sqlite:///our.db")
+Base.metadata.create_all(engine)
