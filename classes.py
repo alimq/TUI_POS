@@ -23,8 +23,10 @@ class Order(Base):
     id = Column(Integer, primary_key=True)
     total = Column(Numeric(10,2), nullable=False)
     created_at = Column(DateTime, server_default=func.now())
-    def __init__(self,total):
+    def __init__(self,total,created_at=None):
         self.total = total
+        if created_at is not None:
+            self.created_at = created_at
 
 from sqlalchemy import ForeignKey
 
