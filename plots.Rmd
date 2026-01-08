@@ -1,0 +1,46 @@
+---
+title: "plotsForTUIPOS"
+author: "Alim Imanmalik"
+date: "2025-12-13"
+output: pdf_document
+---
+
+```{r,echo=FALSE,message=FALSE}
+library(DBI)
+library(RSQLite)
+con <- dbConnect(SQLite(), "our.db")
+df_oi <- dbReadTable(con, "order_item")
+df_o <- dbReadTable(con, "order")
+df_pr <- dbReadTable(con, "product")
+dbDisconnect(con)
+library(dplyr)
+df <- df_oi %>%
+  left_join(df_o %>% select(id, created_at), by
+            = c("order_id" = "id")) %>%
+  left_join(df_pr %>% select(id, price, name), by
+            = c("product_id" = "id")) %>%
+  mutate(created_at = as.POSIXct(created_at,tz="UTC"),
+         revenue = quantity * price,
+         product_id = factor(product_id))
+library(ggplot2)
+df$day <- as.Date(df$created_at,tz="UTC")
+df$product_id <- factor(df$product_id)
+df <- df[order(df$product_id, df$day), ]
+r <- range(df$day, na.rm = TRUE)
+if (r[1] == r[2]) r <- r + c(-3, 3)
+lab <- df %>% distinct(product_id, name) %>% arrange(product_id)
+ggplot(df,aes(x=day,y=revenue,color=
+                product_id,group=product_id)) +
+  geom_line() +
+  geom_point() +
+  scale_x_date(limits=r) +
+  scale_y_continuous(limits=
+                       range(0,max(df$revenue))) +
+  scale_color_discrete(
+    name="Product",
+    breaks=lab$product_id,
+    labels=lab$name
+  )
+# below is decomposition of the graph
+# below is the second graph - customers / foot traffic
+```
