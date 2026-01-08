@@ -1,7 +1,4 @@
 from classes import *
-engine = create_engine("sqlite:///our.db")
-Base.metadata.create_all(engine)
-
 
 def hash(p):
     return p

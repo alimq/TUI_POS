@@ -7,15 +7,12 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import CheckConstraint
 from sqlalchemy.orm import Session
 
-# Creating an instance of the shared ORM session
-engine = create_engine("sqlite:///our.db")
-Base.metadata.create_all(engine)
-session = Session(bind=engine)
-
+# Define all table classes FIRST
 class Product(Base):
     __tablename__ = 'product'
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
+    category = Column(String(100))
     price = Column(Numeric(10,2))
     stock_quantity = Column(Integer, nullable=False)
     created_at = Column(DateTime, server_default=func.now())
@@ -48,3 +45,8 @@ class Payment(Base):
                     nullable=False
                     )
     created_at = Column(DateTime, server_default=func.now())
+
+# Creating an instance of the shared ORM session AFTER defining all classes
+engine = create_engine("sqlite:///our.db")
+Base.metadata.create_all(engine)
+session = Session(bind=engine)
