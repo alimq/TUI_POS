@@ -17,8 +17,9 @@ class Product(Base):
     stock_quantity = Column(Integer, nullable=False)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now())
-    def __init__(self,name,price,stock_q):
+    def __init__(self,name,category,price,stock_q):
         self.name = name
+        self.category = category
         self.price = price
         self.stock_quantity = stock_q
 

@@ -5,7 +5,7 @@ date: "2025-12-13"
 output: pdf_document
 ---
 
-```{r,echo=FALSE,message=FALSE}
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
 library(DBI)
 library(RSQLite)
 con <- dbConnect(SQLite(), "our.db")
@@ -26,21 +26,115 @@ library(ggplot2)
 df$day <- as.Date(df$created_at,tz="UTC")
 df$product_id <- factor(df$product_id)
 df <- df[order(df$product_id, df$day), ]
-r <- range(df$day, na.rm = TRUE)
-if (r[1] == r[2]) r <- r + c(-3, 3)
+date_lim <- range(df$day, na.rm = TRUE)
+if (date_lim[1] == date_lim[2]) date_lim <- date_lim + c(-3, 3)
 lab <- df %>% distinct(product_id, name) %>% arrange(product_id)
-ggplot(df,aes(x=day,y=revenue,color=
-                product_id,group=product_id)) +
-  geom_line() +
-  geom_point() +
-  scale_x_date(limits=r) +
-  scale_y_continuous(limits=
-                       range(0,max(df$revenue))) +
-  scale_color_discrete(
-    name="Product",
-    breaks=lab$product_id,
-    labels=lab$name
-  )
 # below is decomposition of the graph
 # below is the second graph - customers / foot traffic
+library(lubridate)
+mx = 0
+mx_date = ""
+df$day <- as.Date(df$day)
+for (i in 1:nrow(df)) {
+  #print(df[i, ])
+  year <- as.integer(format(df$day[i], '%Y'))
+  month <- as.integer(format(df$day[i], '%m'))
+  day <- as.integer(format(df$day[i], '%d'))
+  days = year * 365 + month * 30 + day
+  if (mx < days) {
+    mx <- days
+    mx_date <- df$day[i]
+  }
+}
+if (!require("devtools")) install.packages("devtools")
+devtools::install_github("mkuhn/dict")
+library(dict)
+qs <- dict()
+for (i in 1:nrow(df)) {
+  year <- as.integer(format(df$day[i], '%Y'))
+  month <- as.integer(format(df$day[i], '%m'))
+  day <- as.integer(format(df$day[i], '%d'))
+  days = year * 365 + month * 30 + day
+  if (days >= mx-6) {
+    q <- as.integer(df$quantity[i])
+    p_id <- as.character(df$product_id[i])
+    if (is.null(qs[[p_id]])) qs[[p_id]] <- 0
+    qs[[p_id]] <- qs[[p_id]] + q
+  }
+}
+options(repos = c(CRAN = "http://cran.us.r-project.org"))
+
+#install.packages("varhandle")
+library(varhandle)
+total <- 0
+segs <- data.frame(
+  mx_date = as.Date(character()),
+  lr = numeric(),
+  rr = numeric(),
+  col = integer()
+)
+for (key in names(qs)) {
+  if (check.numeric(key)) {
+    # product id
+    print(df_pr$name[as.integer(key)])
+    #print(qs[[key]])
+    # average daily quantity
+    # will use week sum and make a range for
+    # next week
+    
+    # maybe round it instead of as.integer
+    l <- round(qs[[key]]*0.833)
+    r <- round(qs[[key]]*1.2)
+    lr <- (l / 7) * as.numeric(df_pr$price[as.integer(key)])
+    rr <- (r / 7) * as.numeric(df_pr$price[as.integer(key)])
+    total <- total + as.integer(qs[[key]]) * as.numeric(df_pr$price[as.integer(key)])
+    print("The quantity for next week for this product id will range from l to r:")
+    print(l)
+    print(r)
+    print(lr)
+    print(rr)
+    print(as.integer(key))
+    segs <- rbind(segs, data.frame(
+      mx_date = mx_date,
+      lr = lr,
+      rr = rr,
+      col = as.integer(key)
+    ))
+  }
+  #value <- as.numeric(qs$get(key,0)) / 7
+  #print("Key")
+  #print(key)
+  #print("Value")
+  #print(value)
+}
+library(ggnewscale)
+
+segs$mx_date <- as.Date(segs$mx_date)
+curr_plot <- ggplot(df, aes(x = day, y = revenue, color = product_id, group = product_id)) +
+  geom_line() +
+  geom_point() +
+  scale_x_date(limits = date_lim) +
+  scale_y_continuous(limits = range(0, max(df$revenue))) +
+  scale_color_discrete(
+    name = "Product",
+    breaks = lab$product_id,
+    labels = lab$name
+  ) +
+  ggnewscale::new_scale_color() +
+  geom_segment(
+    data = segs,
+    inherit.aes = FALSE,
+    aes(x = mx_date, xend = mx_date, y = lr, yend = rr, color = col),
+    linewidth = 0.7
+  ) +
+  scale_color_identity(guide = "none")
+curr_plot
+print("Total projected revenue for next week:")
+print(total)
+# 1) password. storing securely
+# 2) split the screen based on log in
+# 3) inventory management
+# 4) analysis. what fake data. analyse sales or restock or both
+# 5) what decision-making based on graph we will do
+# 6) timer for F&B only
 ```

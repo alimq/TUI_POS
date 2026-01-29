@@ -11,16 +11,20 @@ from classes import *
 # before adding fake data, clear the table
 session.execute(text("delete from product"))
 products = [
-    Product("fries",6,40),
-    Product("nachos, Dorito",6,20),
-    Product("soft drink",5,30),
-    Product("oil",10,20),
-    Product("cheddar",6,15),
-    Product("mozzarella",6,15),
-    Product("cheese sauce",5,15),
-    Product("minced beef",8,15),
-    Product("minced chicken breasts",8,15),
-    Product("corn starch",5,15)
+    Product("Espresso","Beverages",6,40),
+    Product("Cappuccino","Beverages",6,20),
+    Product("Latte","Beverages",5,30),
+    Product("Americano","Beverages",10,20),
+    Product("Mocha","Beverages",6,15),
+    Product("Croissant","Pastries",6,15),
+    Product("Blueberry Muffin","Pastries",5,15),
+    Product("Chocolate Chip Cookie","Pastries",8,15),
+    Product("Danish","Pastries",8,15),
+    Product("Turkey Club","Sandwiches",5,15),
+    Product("BLT","Sandwiches",5,15),
+    Product("Veggie Wrap","Sandwiches",5,15),
+    Product("Potato Chips","Snacks",5,15),
+    Product("Granola Bar","Snacks",5,15)
 ]
 # ...
 from datetime import datetime
