@@ -6,7 +6,7 @@
 # Names: Imanmalik Alim | Wong Winson | Yong Zi Jing
 # IDs: 252FC253VV | 252FC2541L | 252FC253BP
 # *************************************************************************
-from classes import session, Product, Order, OrderItem
+from db.classes import session, Product, Order, OrderItem
 from sqlalchemy import select
 import os
 

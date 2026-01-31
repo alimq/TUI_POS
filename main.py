@@ -6,11 +6,11 @@
 # Names: Imanmalik Alim | Wong Winson | Yong Zi Jing
 # IDs: 252FC253VV | 252FC2541L | 252FC253BP
 # *************************************************************************
-from classes import *
-from cashier import cashier
-from admin import admin
-from register import clear_screen
-from splash import bootup
+from db.classes import *
+from cashier.cashier import cashier
+from admin.admin import admin
+from tools.register import clear_screen
+from tools.splash import bootup
 import time
 
 def hash(p):

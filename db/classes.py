@@ -15,6 +15,7 @@ from sqlalchemy import Column, Integer, String,\
 from sqlalchemy import ForeignKey
 from sqlalchemy import CheckConstraint
 from sqlalchemy.orm import Session
+import os
 
 # Define all table classes FIRST
 class Product(Base):
@@ -57,6 +58,8 @@ class Payment(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 # Creating an instance of the shared ORM session AFTER defining all classes
-engine = create_engine("sqlite:///our.db")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+db_path = os.path.join(BASE_DIR, "our.db")
+engine = create_engine(f"sqlite:///{db_path}")
 Base.metadata.create_all(engine)
 session = Session(bind=engine)

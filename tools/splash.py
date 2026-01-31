@@ -12,7 +12,7 @@ import threading
 import PIL.Image
 import readchar
 import shutil
-from register import clear_screen
+from tools.register import clear_screen
 
 def bootup():
     screen = r"""

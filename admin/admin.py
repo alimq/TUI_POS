@@ -14,9 +14,10 @@ Admin's main menu and all the associated funcitons accessible
 import os
 import time
 store_balance = 1000 # hardcoded for now, will be based on the remaining balance in bank
-from timer import confirm
-from admin_restock import start_restock_system
-from register import clear_screen, getch
+from tools.timer import confirm
+from admin.admin_restock import start_restock_system
+from tools.register import clear_screen, getch
+from admin.predictions import predictions
 
 def admin():
     while True:
@@ -25,7 +26,7 @@ def admin():
             print("Admin's menu")
             print()
             print("1. Inventory management")
-            # print("2. Analysis")
+            print("2. Analysis")
             print("3. Exit")
             print()
             user = int(input('To: '))
@@ -35,7 +36,8 @@ def admin():
                 start_restock_system()
                 
             elif user == 2:
-                # Analysis part
+                print("Loading the analysis page")
+                predictions()
                 pass
 
             elif user == 3:

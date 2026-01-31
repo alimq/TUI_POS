@@ -6,13 +6,13 @@
 # Names: Imanmalik Alim | Wong Winson | Yong Zi Jing
 # IDs: 252FC253VV | 252FC2541L | 252FC253BP
 # *************************************************************************
-from register import clear_screen, getch
+from tools.register import clear_screen, getch
 import threading
 import time
 import sys
 import readchar
 import os
-from classes import session, Product, Order, OrderItem
+from db.classes import session, Product, Order, OrderItem
 from sqlalchemy import select
 from datetime import datetime, timezone
 

@@ -13,9 +13,9 @@ Cashier's main menu and all the functions that are accessible to the cashier.
 
 import os
 import time
-from register import run_register, clear_screen, restock_inventory, getch
+from tools.register import run_register, clear_screen, restock_inventory, getch
 store_balance = 1000 # hardcoded for now, will be based on the remaining balance in bank
-from timer import confirm
+from tools.timer import confirm
 
 def cashier():
     while True:
