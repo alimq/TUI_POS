@@ -1,3 +1,15 @@
+<<<<<<< HEAD
+=======
+# *************************************************************************
+# Course: CSP1114 PROBLEM SOLVING AND PROGRAM DESIGN
+# Lecture / Lab Section: TC1L / TL1L
+# Trimester: 2530
+# Group Name (from eBwise): TL1L-03
+# Names: Imanmalik Alim | Wong Winson | Yong Zi Jing
+# IDs: MEMBER_ID_1 | MEMBER_ID_2 | 252FC253BP
+# *************************************************************************
+
+>>>>>>> origin/yong4
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
@@ -15,6 +27,7 @@ class Product(Base):
     category = Column(String(100))
     price = Column(Numeric(10,2))
     stock_quantity = Column(Integer, nullable=False)
+<<<<<<< HEAD
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now())
     def __init__(self,name,category,price,stock_q):
@@ -22,16 +35,25 @@ class Product(Base):
         self.category = category
         self.price = price
         self.stock_quantity = stock_q
+=======
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now())
+>>>>>>> origin/yong4
 
 class Order(Base):
     __tablename__ = 'order'
     id = Column(Integer, primary_key=True)
     total = Column(Numeric(10,2), nullable=False)
+<<<<<<< HEAD
     created_at = Column(DateTime, server_default=func.now())
     def __init__(self,total,created_at=None):
         self.total = total
         if created_at is not None:
             self.created_at = created_at
+=======
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    completed_at = Column(DateTime(timezone=True), nullable=True)
+>>>>>>> origin/yong4
 
 
 class OrderItem(Base):
@@ -40,16 +62,21 @@ class OrderItem(Base):
     order_id = Column(Integer, ForeignKey('order.id'), nullable=False)
     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
     quantity = Column(Integer, nullable=False)
+<<<<<<< HEAD
     def __init__(self,order_id,product_id,quantity):
         self.order_id = order_id
         self.product_id = product_id
         self.quantity = quantity
+=======
+    subtotal = Column(Numeric(10,2), nullable=False)
+>>>>>>> origin/yong4
 
 
 class Payment(Base):
     __tablename__ = 'payment'
     id = Column(Integer, primary_key=True)
     order_id = Column(Integer, ForeignKey('order.id'))
+<<<<<<< HEAD
     method = Column(String(7),
                     CheckConstraint("method IN ('ewallet','cash')"
                                     ,name="method"),
@@ -59,8 +86,21 @@ class Payment(Base):
     def __init__(self,order_id,method):
         self.order_id = order_id
         self.method = method
+=======
+    amount = Column(Numeric(10,2), nullable=False)
+    method = Column(String(7),
+                    CheckConstraint("method IN ('ewalllet','cash')"
+                                    ,name="method"),
+                    nullable=False
+                    )
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+>>>>>>> origin/yong4
 
 # Creating an instance of the shared ORM session AFTER defining all classes
 engine = create_engine("sqlite:///our.db")
 Base.metadata.create_all(engine)
+<<<<<<< HEAD
 session = Session(bind=engine)
+=======
+session = Session(bind=engine)
+>>>>>>> origin/yong4

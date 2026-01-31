@@ -19,6 +19,25 @@ def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
     #pass
 
+def getch():
+    import sys
+    print()
+    print("Please press any key to continue...")
+    if sys.platform == 'win32':
+        import msvcrt
+        return msvcrt.getch().decode('utf-8')
+    else:
+        import tty
+        import termios
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(fd)
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcssetattr(fd, termios.TCSADRAIN, old_settings)
+        return ch
+
 # 1. Show all categories and get category
 def get_categories():
     """
@@ -318,7 +337,11 @@ def run_register():
                     # else:
                     #     print('Please enter either Y or N only.')
                 else:
+<<<<<<< HEAD
                     print("Ordering cancelled")
+=======
+                    print("Exit program.")
+>>>>>>> origin/yong4
                     return
             elif action == 'back' or action == 'home':
                 # Already at first step, maybe exit or show menu
