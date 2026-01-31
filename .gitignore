@@ -1,4 +1,5 @@
 venv
-our.db
+/our.db
+!db/our.db
 __pycache__
 .DS_Store
