@@ -8,3 +8,6 @@ python3 main.py
 # UX:
 - Type in "admin" or "cashier" user
 - Password is "hash123" for both
+
+# Github:
+- https://github.com/alimq/TUI_POS/tree/main
