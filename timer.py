@@ -3,10 +3,9 @@
 # Lecture / Lab Section: TC1L / TL1L
 # Trimester: 2530
 # Group Name (from eBwise): TL1L-03
-# Names: Alim Imanmalik | Wong Winson | Yong Zi Jing
-# IDs: 252FC253VV | MEMBER_ID_2 | 252FC253BP
+# Names: Imanmalik Alim | Wong Winson | Yong Zi Jing
+# IDs: 252FC253VV | 252FC2541L | 252FC253BP
 # *************************************************************************
-
 from register import clear_screen, getch
 import threading
 import time

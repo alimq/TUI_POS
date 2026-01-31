@@ -1,3 +1,12 @@
+# *************************************************************************
+# Course: CSP1114 PROBLEM SOLVING AND PROGRAM DESIGN
+# Lecture / Lab Section: TC1L / TL1L
+# Trimester: 2530
+# Group Name (from eBwise): TL1L-03
+# Names: Imanmalik Alim | Wong Winson | Yong Zi Jing
+# IDs: 252FC253VV | 252FC2541L | 252FC253BP
+# *************************************************************************
+
 from sqlalchemy.orm import Session
 from sqlalchemy import text, create_engine
 engine = create_engine("sqlite:///our.db")
