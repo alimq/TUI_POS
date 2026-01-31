@@ -337,11 +337,7 @@ def run_register():
                     # else:
                     #     print('Please enter either Y or N only.')
                 else:
-<<<<<<< HEAD
-                    print("Ordering cancelled")
-=======
                     print("Exit program.")
->>>>>>> origin/yong4
                     return
             elif action == 'back' or action == 'home':
                 # Already at first step, maybe exit or show menu

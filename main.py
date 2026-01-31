@@ -1,13 +1,10 @@
-<<<<<<< HEAD
-from classes import *
-=======
 # *************************************************************************
 # Course: CSP1114 PROBLEM SOLVING AND PROGRAM DESIGN
 # Lecture / Lab Section: TC1L / TL1L
 # Trimester: 2530
 # Group Name (from eBwise): TL1L-03
 # Names: Imanmalik Alim | Wong Winson | Yong Zi Jing
-# IDs: MEMBER_ID_1 | MEMBER_ID_2 | 252FC253BP
+# IDs: 252FC253VV | 252FC2541L | 252FC253BP
 # *************************************************************************
 from classes import *
 from cashier import cashier
@@ -15,7 +12,6 @@ from admin import admin
 from register import clear_screen
 from splash import bootup
 import time
->>>>>>> origin/yong4
 
 def hash(p):
     return p
@@ -29,20 +25,6 @@ def load(u):
     print(u, 'loaded!')
 
 while True:
-<<<<<<< HEAD
-    user = input("Input the user: ")
-    if user == 'cashier' or user == 'admin':
-        while True:
-            password = input("Input the password: ")
-            if hash(password) == h[user]:
-                load(user)
-                break
-            else:
-                print("Incorrect password. Try again")
-        break
-    else:
-        print("User does not exist. Try again")
-=======
     first_boot = True
     while True:
         user = input("Input the user: ")
@@ -81,4 +63,3 @@ while True:
             print("User does not exist. Try again")
             time.sleep(0.5)
             clear_screen()
->>>>>>> origin/yong4
