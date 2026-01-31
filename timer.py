@@ -11,7 +11,7 @@ from register import clear_screen, getch
 import threading
 import time
 import sys
-import msvcrt
+import readchar
 import os
 from classes import session, Product, Order, OrderItem
 from sqlalchemy import select
@@ -225,7 +225,7 @@ def show_all_live():
     
     display_thread = threading.Thread(target=update_display)
     display_thread.start()
-    msvcrt.getch()
+    readchar.readkey()
     
     stop_event.set()
     display_thread.join()
@@ -366,9 +366,18 @@ def confirm():
         nonlocal selected_order, input_buffer
         
         while not stop_event.is_set():
-            if msvcrt.kbhit():
-                ch = msvcrt.getch().decode('utf-8', errors='ignore').upper()
-                
+            import sys
+            import select
+            import readchar
+            def key_pressed():
+                return select.select([sys.stdin], [], [], 0)[0]
+            def read_key_nonblocking():
+                if key_pressed():
+                    return readchar.readkey()
+                return None
+            ch = read_key_nonblocking()
+            if ch:
+                ch = ch.upper()
                 if selected_order is None:
                     # Main menu input
                     if ch == 'Q':
@@ -376,14 +385,14 @@ def confirm():
                         break
                     elif ch.isdigit():
                         input_buffer += ch
-                    elif ch == '\r':  # Enter key
+                    elif ch == readchar.key.ENTER:  # Enter key
                         if input_buffer:
                             try:
                                 selected_order = int(input_buffer)
                                 input_buffer = ""
                             except ValueError:
                                 input_buffer = ""
-                    elif ch == '\x08':  # Backspace
+                    elif ch == readchar.key.BACKSPACE:  # Backspace
                         input_buffer = input_buffer[:-1]
                 else:
                     # Detail view input

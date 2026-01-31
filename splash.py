@@ -11,7 +11,7 @@ import time
 import sys
 import threading
 import PIL.Image
-import msvcrt
+import readchar
 import shutil
 from register import clear_screen
 
@@ -40,7 +40,7 @@ def bootup():
             time.sleep(0.01)
 
     def wait_skip():
-        msvcrt.getch()
+        readchar.readkey()
         skip.set()
 
     display_thread = threading.Thread(target=display_animation)

@@ -35,7 +35,7 @@ def getch():
             tty.setraw(fd)
             ch = sys.stdin.read(1)
         finally:
-            termios.tcssetattr(fd, termios.TCSADRAIN, old_settings)
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         return ch
 
 # 1. Show all categories and get category
