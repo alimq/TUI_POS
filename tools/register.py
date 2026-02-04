@@ -293,7 +293,11 @@ def checkoutCart(cart):
                     print("Please enter either Y or N only.")
                     continue
 
-    order = Order(total=total)
+    from datetime import datetime,timezone
+
+    now_utc = datetime.now(timezone.utc)
+
+    order = Order(total=total,created_at=now_utc)
     session.add(order)
     session.flush()
 

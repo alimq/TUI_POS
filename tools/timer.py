@@ -384,49 +384,40 @@ def confirm():
     
     def handle_input():
         nonlocal selected_order, input_buffer
-        
+
         while not stop_event.is_set():
-            import sys
-            import select
-            import readchar
-            def key_pressed():
-                return select.select([sys.stdin], [], [], 0)[0]
-            def read_key_nonblocking():
-                if key_pressed():
-                    return readchar.readkey()
-                return None
-            ch = read_key_nonblocking()
-            if ch:
-                ch = ch.upper()
-                if selected_order is None:
-                    # Main menu input
-                    if ch == 'Q':
-                        stop_event.set()
-                        break
-                    elif ch.isdigit():
-                        input_buffer += ch
-                    elif ch == readchar.key.ENTER:  # Enter key
-                        if input_buffer:
-                            try:
-                                selected_order = int(input_buffer)
-                                input_buffer = ""
-                            except ValueError:
-                                input_buffer = ""
-                    elif ch == readchar.key.BACKSPACE:  # Backspace
-                        input_buffer = input_buffer[:-1]
-                else:
-                    # Detail view input
-                    if ch == 'Y':
-                        # Mark order as complete
-                        order_obj = session.query(Order).filter(Order.id == selected_order).first()
-                        if order_obj:
-                            order_obj.completed_at = datetime.now(timezone.utc)
-                            session.commit()
-                        selected_order = None
-                    elif ch == 'N':
-                        selected_order = None
-            
-            time.sleep(0.1)
+            ch = readchar.readkey()  # BLOCKING: reads one key at a time
+            ch_upper = ch.upper()
+
+            if selected_order is None:
+                # Main menu input
+                if ch_upper == 'Q':
+                    stop_event.set()
+                    break
+                elif ch.isdigit():  # only accept digits 0-9
+                    input_buffer += ch
+                elif ch == readchar.key.ENTER:
+                    if input_buffer:
+                        try:
+                            selected_order = int(input_buffer)
+                            input_buffer = ""
+                        except ValueError:
+                            input_buffer = ""
+                elif ch == readchar.key.BACKSPACE:
+                    input_buffer = input_buffer[:-1]
+
+            else:
+                # Detail view input
+                if ch_upper == 'Y':
+                    # Mark order as complete
+                    order_obj = session.query(Order).filter(Order.id == selected_order).first()
+                    if order_obj:
+                        order_obj.completed_at = datetime.now(timezone.utc)
+                        session.commit()
+                    selected_order = None
+                elif ch_upper == 'N':
+                    selected_order = None
+
     
     # Start threads
     display_thread = threading.Thread(target=update_display)

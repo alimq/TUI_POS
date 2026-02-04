@@ -15,8 +15,8 @@ def predictions():
     months = ['January','February','March','April','May','June','July','August','September','October','November','December']
     pt,dicti,currLetter,labels,letters,mxrev = [],dict(),'A',dict(),dict(),-1
     with engine.connect() as conn:
-        result = conn.execute(text('SELECT "order".created_at AS order_created_at, * FROM `order` JOIN order_item ON `order`.id = order_item.order_id LEFT JOIN product ON product.id = order_item.product_id')).fetchall()
-        cutoff = conn.execute(text('SELECT MAX(created_at) FROM `order`')).scalar()
+        result = conn.execute(text('SELECT "orders".created_at AS order_created_at, * FROM `orders` JOIN order_item ON `orders`.id = order_item.order_id LEFT JOIN product ON product.id = order_item.product_id')).fetchall()
+        cutoff = conn.execute(text('SELECT MAX(created_at) FROM `orders`')).scalar()
         if isinstance(cutoff, str):
             cutoff = datetime.fromisoformat(cutoff)
         if cutoff.tzinfo is None:
@@ -24,6 +24,9 @@ def predictions():
         recent = cutoff - timedelta(days=20)
         for row in result:
             d = row[0]   # this is order_created_at from the SELECT clause
+
+            if d is None:
+                continue  # skip rows with no order_created_at
 
             if isinstance(d, str):
                 d = datetime.fromisoformat(d)
@@ -65,6 +68,7 @@ def predictions():
     needed = max(0,20 - maxdate[2])
     if needed>0:
         days = list(range(days_in_month[m]+1-needed,days_in_month[m]+1)) + days
+    cutoff = recent
     cutoff = [int(a) for a in str(cutoff).split(' ')[0].split('-')]
     cli_x,cli_y,range_x = 20,20*3,(0,mxrev)
     len_x,len_y = (range_x[1]-range_x[0]) / cli_x,20 / cli_y
