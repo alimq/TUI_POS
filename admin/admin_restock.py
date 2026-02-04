@@ -12,7 +12,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 # --- Database Setup ---
 Base = declarative_base()
-engine = create_engine('sqlite:///our.db')
+engine = create_engine('sqlite:///db/our.db')
 Session = sessionmaker(bind=engine)
 session = Session()
 
@@ -47,7 +47,7 @@ def seed_data():
 
 # --- Main System ---
 def start_restock_system():
-    seed_data()
+    # seed_data()
     cart = []
     
     print("\n" + "="*55)
@@ -64,7 +64,7 @@ def start_restock_system():
         del_idx = len(categories)+2
         print(f"{add_item_idx}. [ADD NEW ITEM / CATEGORY]")
         print(f"{del_idx}. [DELETE AN ITEM]")
-        print("Q. [CHECKOUT & EXIT]")
+        print("Q. [COMMIT & EXIT]")
         
         choice = input("\nAction: ").lower()
         if choice == 'q': break
@@ -154,7 +154,7 @@ def start_restock_system():
         print("-" * 55)
         print(f"GRAND TOTAL: ${grand_total:>41.2f}")
         
-        if input("\nConfirm Transaction? (y/n): ").lower() == 'y':
+        if input("\nConfirm Addition? (y/n): ").lower() == 'y':
             for p, q in cart: p.stock_quantity += q
             session.commit()
             print("[SUCCESS] Inventory Updated.")

@@ -24,14 +24,16 @@ Base = declarative_base()
 
 # Define all table classes FIRST
 class Product(Base):
-    __tablename__ = 'product'
+    __tablename__ = 'products'
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
     category = Column(String(100))
     price = Column(Numeric(10,2))
     stock_quantity = Column(Integer, nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now())
+    #created_at = Column(DateTime(timezone=True), server_default=func.now())
+    #updated_at = Column(DateTime(timezone=True), server_default=func.now())
+    stock_quantity = Column(Integer, default=0)
+    last_updated = Column(DateTime)
 
 class Order(Base):
     __tablename__ = 'order'
@@ -45,7 +47,7 @@ class OrderItem(Base):
     __tablename__ = 'order_item'
     id = Column(Integer, primary_key=True)
     order_id = Column(Integer, ForeignKey('order.id'), nullable=False)
-    product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
+    product_id = Column(Integer, ForeignKey('products.id'), nullable=False)
     quantity = Column(Integer, nullable=False)
     subtotal = Column(Numeric(10,2), nullable=False)
 

@@ -9,18 +9,26 @@
 
 from db.classes import *
 from sqlalchemy import text
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, timezone
 def predictions():
     maxdate = -1
     months = ['January','February','March','April','May','June','July','August','September','October','November','December']
     pt,dicti,currLetter,labels,letters,mxrev = [],dict(),'A',dict(),dict(),-1
     with engine.connect() as conn:
-        result = conn.execute(text('SELECT "order".created_at AS order_created_at, * FROM `order` JOIN order_item ON `order`.id = order_item.order_id JOIN product ON product.id = order_item.product_id')).fetchall()
-        cutoff = conn.execute(text('SELECT DATE(MAX(created_at)) FROM `order`')).scalar()
-        cutoff = datetime.fromisoformat(cutoff)
+        result = conn.execute(text('SELECT "order".created_at AS order_created_at, * FROM `order` JOIN order_item ON `order`.id = order_item.order_id LEFT JOIN product ON product.id = order_item.product_id')).fetchall()
+        cutoff = conn.execute(text('SELECT MAX(created_at) FROM `order`')).scalar()
+        if isinstance(cutoff, str):
+            cutoff = datetime.fromisoformat(cutoff)
+        if cutoff.tzinfo is None:
+            cutoff = cutoff.replace(tzinfo=timezone.utc)
         recent = cutoff - timedelta(days=20)
         for row in result:
-            d = datetime.fromisoformat(row.order_created_at)
+            d = row[0]   # this is order_created_at from the SELECT clause
+
+            if isinstance(d, str):
+                d = datetime.fromisoformat(d)
+            if d.tzinfo is None:
+                d = d.replace(tzinfo=timezone.utc)
             if d >= recent:
                 if maxdate == -1:
                     maxdate = d
@@ -31,11 +39,19 @@ def predictions():
                     labels[row.name] = currLetter
                     letters[currLetter] = row.name
                     currLetter = chr(ord(currLetter) + 1)
+                price = row.price if row.price is not None else 0
                 if mxrev == -1:
-                    mxrev = row.quantity*row.price
+                    mxrev = row.quantity*price
                 else:
-                    mxrev = max(mxrev,row.quantity*row.price)
-                pt.append((row.quantity*row.price,int(row.order_created_at.split(' ')[0].split('-')[2]),labels[row.name]))
+                    mxrev = max(mxrev,row.quantity*price)
+                day_offset = (cutoff.date() - d.date()).days
+                if 0 <= day_offset < 20:
+                    pt.append((
+                        row.quantity * price,
+                        20 - day_offset,
+                        labels[row.name]
+                    ))
+
     if maxdate == -1:
         print("No orders for this time period")
         exit(0)

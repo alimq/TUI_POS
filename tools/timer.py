@@ -115,7 +115,14 @@ def show_all():
             items_str = items_str[:ITEMS_WIDTH-3] + "..."
 
         # Calculate elapsed time
-        created_at = timestamps[order_id].replace(tzinfo=timezone.utc)
+        created_at = timestamps.get(order_id)
+
+        if created_at is None:
+            continue   # or skip this order safely
+
+        if created_at.tzinfo is None:
+            created_at = created_at.replace(tzinfo=timezone.utc)
+
         elapsed = (datetime.now(timezone.utc) - created_at).total_seconds()
         minutes, seconds = divmod(int(elapsed), 60)
         hours, minutes = divmod(minutes, 60)
@@ -200,7 +207,14 @@ def show_all_live():
                     items_str = items_str[:items_width-3] + "..."
                 
                 # Calculate elapsed time
-                created_at = timestamps[order_id].replace(tzinfo=timezone.utc)
+                created_at = timestamps.get(order_id)
+
+                if created_at is None:
+                    continue   # or skip this order safely
+
+                if created_at.tzinfo is None:
+                    created_at = created_at.replace(tzinfo=timezone.utc)
+
                 elapsed = (datetime.now(timezone.utc) - created_at).total_seconds()
                 minutes, seconds = divmod(int(elapsed), 60)
                 hours, minutes = divmod(minutes, 60)
@@ -313,7 +327,14 @@ def confirm():
                 if len(items_str) > items_width:
                     items_str = items_str[:items_width-3] + "..."
                 
-                created_at = timestamps[order_id].replace(tzinfo=timezone.utc)
+                created_at = timestamps.get(order_id)
+
+                if created_at is None:
+                    continue   # or skip this order safely
+
+                if created_at.tzinfo is None:
+                    created_at = created_at.replace(tzinfo=timezone.utc)
+
                 elapsed = (datetime.now(timezone.utc) - created_at).total_seconds()
                 minutes, seconds = divmod(int(elapsed), 60)
                 hours, minutes = divmod(minutes, 60)
