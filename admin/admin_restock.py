@@ -29,7 +29,7 @@ Base.metadata.create_all(engine)
 
 # --- Seed Data (Initial Setup) ---
 def seed_data():
-    if session.query(Product).count() < 16:
+    if session.query(Product).count() ==0:
         session.query(Product).delete()
         initial_data = [
             ("Espresso", "Beverages", 3.5, 34), ("Latte", "Beverages", 4.5, 38),
